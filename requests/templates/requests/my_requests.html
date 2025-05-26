@@ -11,60 +11,105 @@
     }
 
     .request-item {
-        border: 1px solid #ddd;
-        padding: 15px;
+        border: none; /* Remove border, rely on shadow */
+        padding: 20px; /* More padding */
         border-radius: 8px;
-        background-color: #fff;
+        background-color: #343a40; /* Darker background for request items */
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3); /* Subtle shadow for depth */
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .request-item:hover {
+        transform: translateY(-3px); /* Lift effect on hover */
+    }
+
+    .request-item h3 {
+        color: #f8f9fa; /* Lighter heading color */
+        margin-top: 0; /* Remove extra top margin */
+        margin-bottom: 15px; /* More space below title */
+        border-bottom: 1px solid #495057; /* Subtle separator */
+        padding-bottom: 10px;
+    }
+
+    .request-item p {
+        color: #ced4da; /* Light gray for body text */
+        margin-bottom: 10px;
+    }
+
+    .request-item strong {
+        color: #f8f9fa; /* Brighter white for labels */
     }
 
     .request-image {
-        max-width: 200px;
+        max-width: 100%; /* Make image responsive within item */
         height: auto;
-        margin-bottom: 10px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Subtle shadow for image */
     }
 
     .detail-link {
         display: inline-block;
-        padding: 8px 12px;
-        background-color: #007bff;
-        color: white;
+        padding: 10px 20px; /* More padding */
+        background-color: #20c997; /* Teal accent color */
+        color: #212529; /* Dark text on teal */
         text-decoration: none;
         border-radius: 5px;
-        margin-top: 10px;
+        margin-top: 15px; /* More space above button */
+        font-weight: 600;
+        transition: background-color 0.3s ease;
     }
 
     .detail-link:hover {
-        background-color: #0056b3;
+        background-color: #17a2b8; /* Darker teal on hover */
     }
 
     .offer-list {
         list-style: none;
         padding: 0;
-        margin-top: 10px;
+        margin-top: 15px; /* Space from offers heading */
     }
 
     .offer-item {
-        border-bottom: 1px solid #eee;
-        padding: 10px 0;
+        border-bottom: 1px solid #495057; /* Darker border for offers */
+        padding: 15px 0; /* More vertical padding */
+        color: #ced4da; /* Default text color for offer details */
+    }
+
+    .offer-item:last-child {
+        border-bottom: none; /* No border for the last offer */
+    }
+
+    .offer-item strong {
+        color: #f8f9fa; /* Lighter strong text */
     }
 
     .accept-link, .reject-link {
         display: inline-block;
-        padding: 5px 8px;
+        padding: 8px 12px; /* More padding for offer buttons */
         text-decoration: none;
-        border-radius: 3px;
-        margin-right: 5px;
+        border-radius: 5px; /* Slightly more rounded */
+        margin-right: 10px; /* More space between buttons */
+        font-weight: 600;
+        transition: background-color 0.3s ease;
     }
 
     .accept-link {
-        background-color: #28a745;
+        background-color: #28a745; /* Green */
         color: white;
     }
 
+    .accept-link:hover {
+        background-color: #218838;
+    }
+
     .reject-link {
-        background-color: #dc3545;
+        background-color: #dc3545; /* Red */
         color: white;
-        display: inline-block;
+    }
+
+    .reject-link:hover {
+        background-color: #c82333;
     }
 </style>
 {% endblock %}

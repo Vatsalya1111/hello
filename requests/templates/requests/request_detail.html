@@ -5,138 +5,210 @@
 
 {% block extra_head %}
 <style>
+    /* Most basic container styles are now handled by .content in base.html */
     .request-detail-container {
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        background-color: #f9f9f9;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0;
+        border: none;
+        border-radius: 0;
+        background-color: transparent; /* No specific background, use parent's */
+        box-shadow: none;
     }
 
     .request-detail-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
-        border-bottom: 2px solid #eee;
-        padding-bottom: 10px;
+        margin-bottom: 25px;
+        border-bottom: 1px solid #495057; /* Darker border for dark theme */
+        padding-bottom: 15px;
+        padding-top: 5px;
     }
 
     .request-detail-title {
-        font-size: 2em;
-        color: #333;
+        font-size: 2.2em;
+        color: #f8f9fa; /* Lighter color for main title */
         margin: 0;
+        font-weight: 700;
     }
 
     .request-image {
-        max-width: 100%; /* Make image responsive */
+        max-width: 100%;
         height: auto;
-        border-radius: 8px;
-        margin-bottom: 15px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3); /* Stronger shadow for image */
+    }
+
+    .request-info {
+        padding-bottom: 25px;
+        border-bottom: 1px solid #495057; /* Darker border */
+        margin-bottom: 25px;
     }
 
     .request-info p {
-        margin: 12px 0; /* Increase vertical spacing */
-        line-height: 1.5; /* Improve readability */
-        color: #444; /* Slightly darker text */
+        margin: 12px 0;
+        line-height: 1.6;
+        color: #ced4da; /* Softer light text */
+        font-size: 1.05em;
     }
 
     .request-info strong {
-        font-weight: bold;
-        color: #222; /* Make labels stand out more */
+        font-weight: 600;
+        color: #f8f9fa; /* Lighter for labels */
+    }
+
+    h3 {
+        font-size: 1.8em;
+        color: #f8f9fa; /* Lighter heading color */
+        margin-bottom: 20px;
+        padding-top: 10px;
+        border-bottom: 1px solid #495057; /* Darker border */
+        padding-bottom: 10px;
     }
 
     .offer-list {
         list-style: none;
         padding: 0;
+        margin-top: 20px;
     }
 
     .offer-item {
-        border: 1px solid #ddd;
-        padding: 10px;
-        margin-bottom: 10px;
-        border-radius: 5px;
-        background-color: white;
+        border: none;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        background-color: #343a40; /* Slightly lighter dark background for offer cards */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3); /* Stronger, softer shadow */
+        transition: transform 0.2s ease-in-out;
+    }
+    .offer-item:hover {
+        transform: translateY(-3px);
+    }
+
+    .offer-item p {
+        margin: 8px 0;
+        color: #ced4da; /* Softer light text */
+        font-size: 1.05em;
     }
 
     .offer-item strong {
-        font-weight: bold;
-        color: #333;
+        font-weight: 600;
+        color: #f8f9fa; /* Lighter for labels */
     }
 
     .accept-link,
     .reject-link {
         display: inline-block;
-        padding: 8px 12px;
+        padding: 10px 20px;
         text-decoration: none;
         border-radius: 5px;
-        margin-top: 10px;
+        margin-top: 15px;
+        font-weight: 600;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 0.95em;
     }
 
     .accept-link {
-        background-color: #28a745;
+        background-color: #28a745; /* Still a rich green */
         color: white;
+        margin-right: 10px;
+    }
+    .accept-link:hover {
+        background-color: #218838;
+        color: white;
+        text-decoration: none;
     }
 
     .reject-link {
-        background-color: #dc3545;
+        background-color: #dc3545; /* Still a strong red */
         color: white;
     }
+    .reject-link:hover {
+        background-color: #c82333;
+        color: white;
+        text-decoration: none;
+    }
 
-    /* NEW CSS for the Make Offer form */
+    /* Make Offer form (updated for dark theme) */
     .offer-form-container {
-        margin-top: 30px;
-        padding: 20px;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        background-color: #ffffff;
+        margin-top: 40px;
+        padding: 30px;
+        border: none;
+        border-radius: 10px;
+        background-color: #3b424d; /* Slightly lighter dark background for form container */
+        box-shadow: 0 3px 10px rgba(0,0,0,0.3);
     }
 
     .offer-form-container h3 {
         margin-top: 0;
-        color: #333;
+        font-size: 2em;
+        color: #f8f9fa; /* Lighter form heading */
+        border-bottom: none;
+        padding-bottom: 0;
     }
 
-    .offer-form-container .form-field p {
-        margin-bottom: 15px;
+    .offer-form-container .form-field {
+        margin-bottom: 20px;
     }
 
     .offer-form-container label {
         display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-        color: #555;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #ced4da; /* Lighter label color */
+        font-size: 1.05em;
     }
 
     .offer-form-container input[type="number"],
     .offer-form-container textarea {
-        width: calc(100% - 22px);
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 1em;
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #495057; /* Darker border */
+        background-color: #2c3e50; /* Matches content background for inputs */
+        color: #f8f9fa; /* Light text in inputs */
+        border-radius: 5px;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .offer-form-container input[type="number"]:focus,
+    .offer-form-container textarea:focus {
+        border-color: #20c997; /* Teal border on focus */
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(32,201,151,.25); /* Teal shadow on focus */
     }
 
     .offer-form-container textarea {
-        resize: vertical;
-        min-height: 80px;
+        min-height: 100px;
     }
 
     .offer-form-container button[type="submit"] {
-        background-color: #007bff;
-        color: white;
-        padding: 10px 20px;
+        background-color: #20c997; /* Teal button */
+        color: #212529; /* Dark text on teal */
+        padding: 12px 25px;
         border: none;
         border-radius: 5px;
         cursor: pointer;
         font-size: 1.1em;
-        margin-top: 15px;
+        margin-top: 25px;
+        transition: background-color 0.3s ease;
+        font-weight: 600;
+        width: auto;
     }
 
     .offer-form-container button[type="submit"]:hover {
-        background-color: #0056b3;
+        background-color: #17a2b8; /* Darker teal on hover */
+    }
+
+    .errorlist {
+        color: #ff6b6b; /* Slightly softer red for errors on dark theme */
+        font-size: 0.9em;
+        margin-top: 5px;
+        list-style-type: none;
+        padding-left: 0;
     }
 </style>
 {% endblock %}
@@ -147,8 +219,8 @@
         <h2 class="request-detail-title">{{ request.title }}</h2>
     </div>
 
-    {% if request.item_image %} {# Change from request.image #}
-        <img src="{{ request.item_image.url }}" alt="{{ request.title }}" class="request-image"> {# Change from request.image.url #}
+    {% if request.item_image %}
+        <img src="{{ request.item_image.url }}" alt="{{ request.title }}" class="request-image">
     {% endif %}
 
     <div class="request-info">
@@ -169,6 +241,7 @@
                     <p><strong>Artisan:</strong> {{ offer.artisan.user.username }} ({{ offer.status }})</p>
                     <p><strong>Price:</strong> {{ offer.price }}</p>
                     <p><strong>Message:</strong> {{ offer.message }}</p>
+                    <p><strong>Estimated Completion:</strong> {{ offer.estimated_completion_days }} days</p>
                     {# These buttons only appear if the user is the request owner and the offer is pending #}
                     {% if offer.status == 'Pending' and request.user == request.upcyclingrequest.user %}
                         <a href="{% url 'accept_offer' offer.id %}" class="accept-link">Accept</a>
@@ -209,7 +282,7 @@
                     <ul class="errorlist">{% for error in offer_form.estimated_completion_days.errors %}<li>{{ error }}</li>{% endfor %}</ul>
                 {% endif %}
             </div>
-            {% if offer_form.non_field_errors %} {# Added this in previous iteration, ensure it's there #}
+            {% if offer_form.non_field_errors %}
                 <ul class="errorlist">{% for error in offer_form.non_field_errors %}<li>{{ error }}</li>{% endfor %}</ul>
             {% endif %}
             <button type="submit">Submit Offer</button>
