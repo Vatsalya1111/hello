@@ -1,10 +1,423 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block title %}EcoCycle Home - Transform, Create, Sustain{% endblock %}
 
-{% block title %}EcoCycle Home{% endblock %}
+{% block extra_head %}
+<style>
+    /* Hero Section Styles */
+    .hero-section {
+        text-align: center;
+        padding: 80px 20px; /* More vertical padding */
+        background-color: #212529; /* Deep dark background */
+        color: #f8f9fa; /* Light text */
+        margin: -30px -30px 30px -30px; /* Extend to edges of content block and add margin below */
+        border-radius: 10px 10px 0 0; /* Match container border-radius at top */
+        box-shadow: inset 0 -5px 15px rgba(0,0,0,0.3); /* Subtle inner shadow at bottom */
+    }
+
+    .hero-section h1 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 3.5em; /* Larger, more impactful heading */
+        margin-bottom: 20px;
+        color: #20c997; /* Teal accent for main headline */
+        line-height: 1.2;
+    }
+
+    .hero-section p {
+        font-size: 1.3em; /* Larger subheading */
+        max-width: 700px;
+        margin: 0 auto 30px auto; /* Centered with more space below */
+        color: #ced4da; /* Slightly muted light color */
+    }
+
+    .hero-buttons .btn {
+        display: inline-block;
+        padding: 15px 30px; /* Larger buttons */
+        margin: 0 15px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1.1em;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .hero-buttons .btn-primary {
+        background-color: #20c997; /* Teal primary button */
+        color: #212529; /* Dark text on teal */
+        border: 2px solid #20c997;
+    }
+
+    .hero-buttons .btn-primary:hover {
+        background-color: #17a2b8; /* Darker teal on hover */
+        border-color: #17a2b8;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    }
+
+    .hero-buttons .btn-secondary {
+        background-color: transparent;
+        color: #20c997; /* Teal border and text */
+        border: 2px solid #20c997;
+    }
+
+    .hero-buttons .btn-secondary:hover {
+        background-color: #20c997; /* Fill with teal on hover */
+        color: #212529; /* Dark text */
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    }
+
+    /* How It Works Section */
+    .how-it-works {
+        padding: 40px 0;
+        text-align: center;
+        background-color: #2c3e50; /* Matches content block background */
+        border-radius: 10px;
+        margin-bottom: 30px; /* Space below this section */
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .how-it-works h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2.5em;
+        margin-bottom: 40px;
+        color: #f8f9fa;
+    }
+
+    .steps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+        gap: 30px;
+        padding: 0 20px;
+    }
+
+    .step-item {
+        background-color: #34495e; /* Slightly lighter dark blue for step cards */
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .step-item:hover {
+        transform: translateY(-5px);
+    }
+
+    .step-item .icon {
+        font-size: 3em; /* Larger icons */
+        color: #20c997; /* Teal for icons */
+        margin-bottom: 15px;
+    }
+
+    .step-item h3 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.5em;
+        color: #f8f9fa;
+        margin-bottom: 10px;
+    }
+
+    .step-item p {
+        color: #ced4da;
+        font-size: 1.05em;
+    }
+
+    /* Latest Requests Section */
+    .latest-requests {
+        padding: 40px 0;
+        text-align: center;
+        background-color: #2c3e50; /* Matches content block background */
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .latest-requests h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2.5em;
+        margin-bottom: 30px;
+        color: #f8f9fa;
+    }
+
+    .request-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px; /* Space between request cards */
+        padding: 0 20px;
+    }
+
+    .request-card-home { /* Specific style for homepage cards */
+        background-color: #343a40; /* Darker grey for card background */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        transition: transform 0.2s ease-in-out;
+        text-align: left; /* Align text within card */
+    }
+
+    .request-card-home:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    .request-card-home h3 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.5em;
+        color: #20c997; /* Teal accent */
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    .request-card-home p {
+        color: #ced4da;
+        margin-bottom: 8px;
+        font-size: 0.95em;
+    }
+
+    .request-card-home strong {
+        color: #e9ecef;
+    }
+
+    .request-card-home .view-details-link {
+        display: inline-block;
+        margin-top: 15px;
+        background-color: #20c997; /* Teal accent */
+        color: #212529; /* Dark text */
+        padding: 8px 18px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
+
+    .request-card-home .view-details-link:hover {
+        background-color: #17a2b8; /* Darker teal on hover */
+    }
+
+    .no-requests-home {
+        text-align: center;
+        color: #adb5bd;
+        padding: 30px;
+        border: 1px dashed #495057;
+        border-radius: 10px;
+        background-color: #343a40;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        margin: 20px; /* Ensure it doesn't touch edges */
+    }
+        /* Before-After Slider Styles */
+    .before-after-slider {
+        position: relative;
+        background-color: #2c3e50; /* Darker background */
+        padding: 30px;
+        margin-bottom: 30px; /* Space below slider */
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        text-align: center;
+        overflow: hidden; /* Crucial to clip slides that are not active */
+    }
+
+    .before-after-slider h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2.2em;
+        color: #f8f9fa; /* Light text */
+        margin-bottom: 20px;
+    }
+
+    /* Container for all slides - this should be a flex container that moves */
+    .slides-container {
+        display: flex;
+        transition: transform 0.5s ease-in-out; /* Smooth sliding animation */
+        width: 100%; /* Ensure container takes full width */
+    }
+
+    .slide {
+        flex: 0 0 100%; /* Each slide takes exactly 100% of the container's width */
+        display: flex; /* Display before and after images side-by-side within EACH slide */
+        justify-content: center; /* Center the image pair */
+        align-items: center; /* Vertically align if images have slightly different heights */
+        gap: 20px; /* Space between before and after images */
+        box-sizing: border-box; /* Include padding/border in element's total width/height */
+        padding: 10px; /* Optional: Add some padding around images within the slide */
+    }
+
+    .slide img {
+        width: 45%; /* Each image takes 45% of the slide width, leaving 10% for gap */
+        max-width: 350px; /* Set a maximum width for larger screens to prevent excessive stretching */
+        height: 300px; /* Fixed height for all images for consistency */
+        object-fit: cover; /* Crop images to fit, maintaining aspect ratio */
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* Slightly stronger shadow */
+        transition: transform 0.2s ease; /* Smooth hover effect */
+    }
+
+    .slide img:hover {
+        transform: scale(1.02); /* Slight zoom on hover */
+    }
+
+
+    .prev, .next {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%); /* Vertically center the arrows */
+        width: auto;
+        padding: 16px;
+        color: #20c997; /* Teal accent */
+        font-weight: bold;
+        font-size: 2em; /* Larger arrows */
+        transition: 0.6s ease;
+        border-radius: 0 3px 3px 0;
+        user-select: none;
+        text-decoration: none;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background for arrows */
+        z-index: 10; /* Ensure arrows are above images */
+    }
+
+    .next {
+        right: 0;
+        border-radius: 3px 0 0 3px;
+    }
+
+    .prev {
+        left: 0; /* Position 'prev' on the left */
+        border-radius: 0 3px 3px 0; /* Correct radius for left arrow */
+    }
+
+    .prev:hover, .next:hover {
+        background-color: rgba(0,0,0,0.8);
+        color: #17a2b8; /* Darker teal on hover */
+    }
+
+    /* Remove default display:none from slide. JavaScript will handle visibility via transform. */
+    /* Also remove the :first-child rule, as it's not needed with the new JS */
+</style>
+{% endblock %}
 
 {% block content %}
-    <h1>Welcome to EcoCycle Platform!</h1>
-    <p>This is your homepage, built using your `base.html`.</p>
-    <p>You can navigate using the links in the header.</p>
-    {# Add more content specific to your homepage here #}
+    <div class="hero-section">
+        <h1>Transform Your Unused into Unique Art</h1>
+        <p>EcoCycle connects you with talented artisans ready to give new life to your old materials. Sustainable creations are just a click away!</p>
+        <div class="hero-buttons">
+            <a href="{% url 'create_request' %}" class="btn btn-primary">Submit a Request</a>
+            <a href="{% url 'artisan_available_requests' %}" class="btn btn-secondary">Explore Available Requests</a>
+        </div>
+    </div>
+
+    <div class="before-after-slider">
+        <h2>Upcycling Transformations</h2>
+        <div class="slides-container"> {# NEW CONTAINER HERE #}
+            <div class="slide">
+                <img src="{% static 'images/Before upcycling_1.jpg' %}" alt="Before Upcycling Chair">
+                <img src="{% static 'images/After upcycling_1.jpg' %}" alt="After Upcycling Chair">
+            </div>
+            <div class="slide">
+                <img src="{% static 'images/Before upcycling_2.jpg' %}" alt="Before Upcycling Cabinet">
+                <img src="{% static 'images/After upcycling_2.jpg' %}" alt="After Upcycling Cabinet">
+            </div>
+            {# Add more .slide divs with your image pairs here #}
+        </div>
+        <a href="#" class="prev">&#10094;</a>
+        <a href="#" class="next">&#10095;</a>
+    </div>
+
+    <div class="how-it-works">
+        <h2>How EcoCycle Works</h2>
+        <div class="steps-grid">
+            <div class="step-item">
+                <div class="icon">&#x1F4DD;</div> {# Pencil/Document Icon #}
+                <h3>Post Your Materials</h3>
+                <p>Describe your items, materials, and what you envision them becoming. Add photos for clarity.</p>
+            </div>
+            <div class="step-item">
+                <div class="icon">&#x1F4B0;</div> {# Money Bag Icon #}
+                <h3>Receive Artisan Offers</h3>
+                <p>Talented artisans will review your request and submit their creative proposals and prices.</p>
+            </div>
+            <div class="step-item">
+                <div class="icon">&#x1F3A8;</div> {# Art Palette Icon #}
+                <h3>Create & Transform</h3>
+                <p>Accept the best offer, and let the magic happen as your items are upcycled into unique art.</p>
+            </div>
+            <div class="step-item">
+                <div class="icon">&#x1F30D;</div> {# Globe Icon #}
+                <h3>Sustainable Impact</h3>
+                <p>Reduce waste and contribute to a circular economy with every beautiful creation.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="latest-requests">
+        <h2>Latest Upcycling Requests</h2>
+        <div class="request-cards-grid">
+            {% if latest_requests %}
+                {% for request in latest_requests %}
+                    <div class="request-card-home">
+                        <h3>{{ request.product_type|default:"Untitled Request" }}</h3>
+                        <p><strong>Materials:</strong> {{ request.material_details|truncatechars:70 }}</p>
+                        <p><strong>Location:</strong> {{ request.pickup_location|default:"Not specified" }}</p>
+                        <a href="{% url 'request_detail' request_id=request.id %}" class="view-details-link">View Details</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-requests-home">
+                    <p>No new upcycling requests are currently available. Check back soon!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
 {% endblock %}
+
+<script>
+let slideIndex = 0; // Start at 0 for array index
+const slidesContainer = document.querySelector(".slides-container");
+const slides = document.querySelectorAll(".slide"); // Get all individual slides
+
+function showSlides(index) {
+  if (index >= slides.length) { // Loop back to start
+    slideIndex = 0;
+  } else if (index < 0) { // Loop to end
+    slideIndex = slides.length - 1;
+  } else {
+    slideIndex = index;
+  }
+
+  // Calculate the amount to translate the container
+  const offset = -slideIndex * 100; // Move by 100% of container width per slide
+  slidesContainer.style.transform = `translateX(${offset}%)`;
+}
+
+function plusSlides(n) {
+  showSlides(slideIndex + n);
+}
+
+// Initial display
+showSlides(slideIndex);
+
+// Automatic slideshow
+let autoSlideInterval = setInterval(() => plusSlides(1), 5000); // Change image every 5 seconds
+
+// Pause auto-slide on hover for better user experience
+const slider = document.querySelector(".before-after-slider");
+slider.addEventListener("mouseenter", () => {
+  clearInterval(autoSlideInterval);
+});
+slider.addEventListener("mouseleave", () => {
+  autoSlideInterval = setInterval(() => plusSlides(1), 5000);
+});
+
+
+// Attach click events to nav buttons with preventDefault()
+document.querySelector(".prev").addEventListener("click", (event) => {
+    event.preventDefault(); // <--- THIS IS THE KEY FIX
+    clearInterval(autoSlideInterval); // Stop auto-slide on manual click
+    plusSlides(-1);
+    autoSlideInterval = setInterval(() => plusSlides(1), 5000); // Restart auto-slide
+});
+
+document.querySelector(".next").addEventListener("click", (event) => {
+    event.preventDefault(); // <--- THIS IS THE KEY FIX
+    clearInterval(autoSlideInterval); // Stop auto-slide on manual click
+    plusSlides(1);
+    autoSlideInterval = setInterval(() => plusSlides(1), 5000); // Restart auto-slide
+});
+</script>

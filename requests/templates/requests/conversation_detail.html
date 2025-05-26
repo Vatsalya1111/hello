@@ -1,9 +1,168 @@
 {% extends 'base.html' %}
 
+{% block title %}Conversation with {{ other_participant.username }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Overall conversation container */
+    .message-container {
+        border: none; /* Remove border, rely on shadow */
+        padding: 20px; /* More padding inside */
+        max-height: 500px; /* Taller chat box */
+        overflow-y: auto; /* Scrollable */
+        margin-bottom: 25px; /* More space below chat box */
+        background-color: #2c3e50; /* Darker blue for chat background */
+        border-radius: 10px;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.3); /* Inner shadow for depth */
+        display: flex; /* Use flexbox for message layout */
+        flex-direction: column;
+        gap: 12px; /* Space between messages */
+    }
+
+    /* Individual message bubble container */
+    .message {
+        margin-bottom: 0; /* Handled by gap in flex container */
+        padding: 0; /* Remove padding from outer div */
+        border-radius: 15px; /* Slightly more rounded corners */
+        max-width: 80%; /* Allow messages to be a bit wider */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Subtle shadow for bubbles */
+        word-wrap: break-word; /* Ensure long words wrap */
+    }
+
+    /* Sent messages (by current user) */
+    .message.sent {
+        align-self: flex-end; /* Align to the right */
+    }
+    .message.sent > div { /* Inner bubble styling */
+        background-color: #20c997; /* Teal accent for sent messages */
+        color: #212529; /* Dark text on teal for contrast */
+        padding: 10px 15px;
+        border-radius: 15px 15px 0 15px; /* Pointy bottom right corner */
+    }
+    .message.sent p {
+        margin: 0; /* Remove default paragraph margins */
+        padding: 0;
+    }
+    .message.sent small {
+        display: block;
+        text-align: right;
+        color: rgba(33,37,41, 0.7); /* Slightly transparent dark text for timestamp */
+        font-size: 0.75em;
+        margin-top: 5px; /* Space above timestamp */
+        padding-right: 3px;
+    }
+
+    /* Received messages (by other participant) */
+    .message.received {
+        align-self: flex-start; /* Align to the left */
+    }
+    .message.received > div { /* Inner bubble styling */
+        background-color: #495057; /* Darker grey for received messages */
+        color: #f8f9fa; /* Light text on dark grey */
+        padding: 10px 15px;
+        border-radius: 15px 15px 15px 0; /* Pointy bottom left corner */
+    }
+    .message.received small.sender-username {
+        font-weight: bold;
+        color: #20c997; /* Teal for sender username */
+        display: block;
+        margin-bottom: 3px;
+        padding: 0;
+        font-size: 0.85em;
+    }
+    .message.received p {
+        margin: 0;
+        padding: 0;
+    }
+    .message.received small {
+        display: block;
+        text-align: left;
+        color: rgba(248,249,250, 0.7); /* Slightly transparent light text for timestamp */
+        font-size: 0.75em;
+        margin-top: 5px;
+        padding-left: 3px;
+    }
+
+    /* No messages text */
+    .message-container > p {
+        text-align: center;
+        color: #adb5bd; /* Medium gray for no messages text */
+        margin: auto; /* Center vertically */
+    }
+
+    /* Message input form */
+    form {
+        margin-top: 20px;
+        background-color: #343a40; /* Dark background for form area */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    form p {
+        margin-bottom: 15px;
+    }
+    form label { /* Hide labels for chat input for cleaner look */
+        display: none;
+    }
+    form input[type="text"],
+    form textarea {
+        width: calc(100% - 24px); /* Adjust for padding/border */
+        padding: 12px;
+        border: 1px solid #495057; /* Darker border */
+        background-color: #3b424d; /* Slightly lighter dark input background */
+        color: #e9ecef; /* Light text in inputs */
+        border-radius: 5px;
+        font-size: 1em;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    form input[type="text"]:focus,
+    form textarea:focus {
+        border-color: #20c997; /* Teal border on focus */
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(32,201,151,.25); /* Teal shadow on focus */
+    }
+    form textarea {
+        resize: vertical;
+        min-height: 70px; /* Slightly taller default input area */
+    }
+    form button[type="submit"] {
+        padding: 12px 25px; /* More padding */
+        background-color: #20c997; /* Teal button */
+        color: #212529; /* Dark text on teal */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-weight: 600;
+        width: 100%; /* Full width button */
+        transition: background-color 0.3s ease;
+    }
+    form button[type="submit"]:hover {
+        background-color: #17a2b8; /* Darker teal on hover */
+    }
+
+    /* Back to Conversations link */
+    .back-link-container {
+        margin-top: 25px; /* More space above the link */
+        text-align: center; /* Center the link */
+    }
+    .back-link-container a {
+        color: #20c997; /* Teal link color */
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .back-link-container a:hover {
+        text-decoration: underline;
+        color: #17a2b8;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
     <h2>Conversation with {{ other_participant.username }}</h2>
     {% if conversation.upcycling_request %}
-        <p>About Request: <a href="{% url 'request_detail' conversation.upcycling_request.id %}">{{ conversation.upcycling_request.product_type }}</a></p>
+        <p>About Request: <a href="{% url 'request_detail' conversation.upcycling_request.id %}" style="color: #20c997; text-decoration: none; font-weight: 600;">{{ conversation.upcycling_request.product_type }}</a></p>
     {% endif %}
 
     {# THIS BLOCK IS FOR DJANGO'S FLASH MESSAGES - KEEP AS IS #}
@@ -15,38 +174,39 @@
         {% endfor %}
     {% endif %}
 
-    <div class="message-container" style="border: 1px solid #ccc; padding: 15px; max-height: 400px; overflow-y: scroll; margin-bottom: 20px; background-color: #f9f9f9; border-radius: 8px;">
-        {% if messages_in_conversation %} {# <--- ENSURE YOU CHANGE THIS LINE! #}
-            {% for message in messages_in_conversation %} {# <-- This part is already correct #}
-                <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}" style="margin-bottom: 10px; padding: 10px; border-radius: 15px; max-width: 75%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); word-wrap: break-word;">
+    <div class="message-container">
+        {% if messages_in_conversation %}
+            {% for message in messages_in_conversation %}
+                <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
                     {% if message.sender == request.user %}
                         {# Sent message bubble (aligned right) #}
-                        <div style="background-color: #dcf8c6; margin-left: auto; margin-right: 0; display: table; clear: both;">
-                            <p style="margin: 0; padding: 0 5px;">{{ message.content }}</p>
-                            <small style="display: block; text-align: right; color: #666; font-size: 0.7em; padding-top: 3px; padding-right: 5px;">{{ message.timestamp|date:"M d, H:i" }}</small>
+                        <div>
+                            <p>{{ message.content }}</p>
+                            <small>{{ message.timestamp|date:"M d, H:i" }}</small>
                         </div>
                     {% else %}
                         {# Received message bubble (aligned left) #}
-                        <div style="background-color: #e0e0e0; margin-right: auto; margin-left: 0; display: table; clear: both;">
-                            <small style="font-weight: bold; color: #555; display: block; margin-bottom: 3px; padding: 0 5px;">{{ message.sender.username }}</small>
-                            <p style="margin: 0; padding: 0 5px;">{{ message.content }}</p>
-                            <small style="display: block; text-align: left; color: #666; font-size: 0.7em; padding-top: 3px; padding-left: 5px;">{{ message.timestamp|date:"M d, H:i" }}</small>
+                        <div>
+                            <small class="sender-username">{{ message.sender.username }}</small>
+                            <p>{{ message.content }}</p>
+                            <small>{{ message.timestamp|date:"M d, H:i" }}</small>
                         </div>
                     {% endif %}
                 </div>
             {% endfor %}
         {% else %}
-            <p style="text-align: center; color: #777;">No messages in this conversation yet. Start chatting!</p>
+            <p>No messages in this conversation yet. Start chatting!</p>
         {% endif %}
     </div>
-    {# Removed the extra clear: both; below message-container as display:table handles it #}
 
-    <form method="post" action="{% url 'conversation_detail' conversation.id %}" style="margin-top: 20px;">
+    <form method="post" action="{% url 'conversation_detail' conversation.id %}">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Send Message</button>
+        <button type="submit">Send Message</button>
     </form>
 
-    <p style="margin-top: 20px;"><a href="{% url 'conversation_list' %}" style="color: #007bff; text-decoration: none;">&larr; Back to Conversations</a></p>
+    <div class="back-link-container">
+        <p><a href="{% url 'conversation_list' %}">&larr; Back to Conversations</a></p>
+    </div>
 
 {% endblock content %}

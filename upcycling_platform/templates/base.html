@@ -5,53 +5,179 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}EcoCycle Website{% endblock %}</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }
-        header { background-color: #333; color: white; padding: 10px 20px; text-align: center; }
-        nav { background-color: #555; padding: 10px; text-align: center; }
-        nav a { color: white; text-decoration: none; margin: 0 15px; }
-        nav a:hover { text-decoration: underline; }
-        .content { padding: 20px; max-width: 900px; margin: 20px auto; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); } /* <--- MODIFIED THIS */
-        .auth-links { float: right; margin-top: -35px; margin-right: 20px; color: white; }
-        .auth-links a { color: white; text-decoration: none; margin-left: 10px; }
-        .auth-links a:hover { text-decoration: underline; }
-        .auth-links form { display: inline; }
-        .auth-links button { background: none; border: none; color: white; text-decoration: underline; cursor: pointer; padding: 0; font-size: inherit; }
 
-        /* NEW: Message specific styles */
+    {# Google Fonts - Montserrat for headings, Open Sans for body text #}
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Global Styles for Dark Theme */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #212529; /* Dark background for the body */
+            color: #e9ecef; /* Light text for readability */
+            line-height: 1.6;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            color: #f8f9fa; /* Lighter headings for contrast */
+            margin-bottom: 0.5em;
+            margin-top: 1em;
+        }
+        a {
+            color: #20c997; /* Vibrant teal for links */
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: #17a2b8; /* Slightly darker teal on hover */
+            text-decoration: underline;
+        }
+
+        /* Header & Navigation */
+        header {
+            background-color: #2c3e50; /* A slightly softer dark blue for header */
+            color: #f8f9fa;
+            padding: 15px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Stronger shadow for dark theme depth */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #f8f9fa;
+        }
+        nav {
+            background-color: #343a40; /* Darker grey for nav bar */
+            padding: 10px 30px;
+            text-align: center;
+            border-bottom: 1px solid #495057; /* Subtle border */
+        }
+        nav a {
+            color: #ced4da; /* Lighter grey for nav links */
+            text-decoration: none;
+            margin: 0 20px;
+            font-weight: 600;
+            padding: 5px 0;
+            position: relative;
+        }
+        nav a:hover {
+            color: #20c997; /* Teal on hover */
+            text-decoration: none;
+        }
+        nav a::after {
+            background-color: #20c997; /* Teal underline */
+        }
+
+        .auth-links {
+            color: #ced4da; /* Lighter grey for auth links */
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .auth-links a {
+            color: #ced4da;
+            text-decoration: none;
+        }
+        .auth-links a:hover {
+            color: #20c997; /* Teal on hover */
+            text-decoration: underline;
+        }
+        .auth-links form {
+            display: inline;
+            margin: 0;
+        }
+        .auth-links button {
+            background: none;
+            border: 1px solid #20c997; /* Teal border for button */
+            color: #20c997; /* Teal text */
+            text-decoration: none;
+            cursor: pointer;
+            padding: 8px 15px;
+            font-size: inherit;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        .auth-links button:hover {
+            background-color: #20c997;
+            color: #212529; /* Dark text on teal hover */
+        }
+
+        .content {
+            padding: 30px;
+            max-width: 960px;
+            margin: 30px auto;
+            background-color: #2c3e50; /* Darker blue for content area */
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* More pronounced shadow for depth */
+        }
+
+        /* Flash Messages */
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        .messages li {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        .messages .success {
+            background-color: #1a5c3e; /* Darker green */
+            color: #d4edda;
+            border: 1px solid #28a745;
+        }
+        .messages .error {
+            background-color: #721c24; /* Darker red */
+            color: #f8d7da;
+            border: 1px solid #dc3545;
+        }
+        .messages .info {
+            background-color: #0c5460; /* Darker blue */
+            color: #d1ecf1;
+            border: 1px solid #17a2b8;
+        }
+
+        /* Message specific styles for conversation page (updated for dark theme) */
         .message-container {
             display: flex;
             flex-direction: column;
-            gap: 10px; /* Space between messages */
+            gap: 10px;
         }
 
-        .message > div { /* Apply to the inner div of message, which is the bubble */
+        .message > div {
             padding: 10px 15px;
-            border-radius: 18px; /* More rounded bubbles */
-            max-width: 70%; /* Limit bubble width */
+            border-radius: 18px;
+            max-width: 70%;
             word-wrap: break-word;
             font-size: 0.95em;
             line-height: 1.4;
         }
 
         .message.sent > div {
-            background-color: #DCF8C6; /* Light green for sent messages */
-            align-self: flex-end; /* Align to the right for sender */
-            margin-left: auto; /* Push to the right */
-            color: #333;
+            background-color: #20c997; /* Teal for sent messages */
+            align-self: flex-end;
+            margin-left: auto;
+            color: #212529; /* Dark text on teal background */
         }
 
         .message.received > div {
-            background-color: #E0E0E0; /* Light gray for received messages */
-            align-self: flex-start; /* Align to the left for receiver */
-            margin-right: auto; /* Push to the left */
-            color: #333;
+            background-color: #495057; /* Darker grey for received messages */
+            align-self: flex-start;
+            margin-right: auto;
+            color: #f8f9fa; /* Light text on dark background */
         }
 
         .message small {
             display: block;
             font-size: 0.7em;
-            color: #777;
+            color: #ced4da; /* Lighter timestamp */
             margin-top: 5px;
         }
 
@@ -63,42 +189,44 @@
             text-align: left;
         }
 
-        /* Basic form styling for the message input */
+        /* Basic form styling for the message input (updated for dark theme) */
         form p {
             margin-bottom: 10px;
         }
         form input[type="text"],
         form textarea {
-            width: calc(100% - 22px); /* Adjust for padding/border */
+            width: calc(100% - 22px);
             padding: 10px;
             margin-bottom: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #495057; /* Darker border */
+            background-color: #3b424d; /* Slightly lighter dark input background */
+            color: #e9ecef; /* Light text in inputs */
             border-radius: 5px;
-            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            box-sizing: border-box;
         }
         form textarea {
-            resize: vertical; /* Allow vertical resizing */
+            resize: vertical;
             min-height: 60px;
         }
         form button[type="submit"] {
             width: 100%;
             padding: 12px;
-            background-color: #4CAF50;
-            color: white;
+            background-color: #20c997; /* Teal button */
+            color: #212529; /* Dark text on teal */
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 1em;
+            transition: background-color 0.3s ease;
         }
         form button[type="submit"]:hover {
-            background-color: #45a049;
+            background-color: #17a2b8; /* Darker teal on hover */
         }
 
     </style>
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
-{# Add this block here #}
-{% block extra_head %}{% endblock %}
 <header>
     <h1>EcoCycle Upcycling Platform</h1>
     <div class="auth-links">
@@ -109,29 +237,34 @@
                 <button type="submit">Logout</button>
             </form>
         {% else %}
-            <a href="{% url 'login' %}">Login</a> | <a href="{% url 'register' %}">Register</a> {# <--- ADD THIS LINK #}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
         {% endif %}
     </div>
 </header>
-    {# upcycling_platform/templates/base.html #}
     <nav>
         <a href="{% url 'home' %}">Home</a>
         <a href="{% url 'create_request' %}">Submit Request</a>
         {% if user.is_authenticated %}
             <a href="{% url 'my_requests' %}">My Requests</a>
-            {# --- NEW LINK FOR ARTISANS --- #}
-            {% if user.artisan_profile.is_active_artisan %} {# Checks if user has an artisan_profile AND if it's active #}
+            {% if user.artisan_profile.is_active_artisan %}
                 <a href="{% url 'artisan_available_requests' %}">Available Requests</a>
             {% endif %}
-            {# --- END NEW LINK --- #}
             <a href="{% url 'conversation_list' %}">Messages</a>
         {% endif %}
-        {# Add more navigation links here later #}
     </nav>
 
     <div class="content">
+        {# Display Django messages here #}
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
         {% block content %}
-        {# This is where specific page content will go #}
         {% endblock %}
     </div>
 </body>

@@ -1,9 +1,63 @@
 {% extends 'base.html' %} {# This extends your main base layout template #}
 
+{% block extra_head %}
+<style>
+    /* Styling for Conversation List Items */
+    .conversation-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .conversation-item {
+        margin-bottom: 15px; /* More space between items */
+        border: none; /* Remove border, use shadow */
+        padding: 15px; /* More padding */
+        border-radius: 8px;
+        background-color: #343a40; /* Darker background for conversation items */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3); /* Subtle shadow for depth */
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .conversation-item:hover {
+        transform: translateY(-3px); /* Lift effect on hover */
+    }
+
+    .conversation-link {
+        text-decoration: none;
+        color: inherit; /* Inherit color from parent for consistency */
+        display: block;
+    }
+
+    .conversation-link strong {
+        color: #f8f9fa; /* Lighter color for primary text */
+        font-size: 1.1em; /* Slightly larger font */
+        display: block; /* Ensure it takes full width */
+        margin-bottom: 5px; /* Space below heading */
+    }
+
+    .conversation-link small {
+        display: block;
+        color: #ced4da; /* Light gray for secondary text */
+        font-size: 0.9em; /* Consistent small text size */
+        margin-top: 5px;
+    }
+
+    /* Adjusting alerts if they appear on this page */
+    .alert {
+        padding: 10px 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        font-weight: 600;
+        /* These colors are now inherited from base.html .messages styles */
+    }
+</style>
+{% endblock %}
+
 {% block content %}
     <h2>Your Conversations</h2>
     {% if messages %} {# Django messages framework #}
         {% for message in messages %}
+            {# The alert class styling is handled by base.html now #}
             <div class="alert alert-{{ message.tags }}">
                 {{ message }}
             </div>
@@ -11,11 +65,11 @@
     {% endif %}
 
     {% if conversations %}
-        <ul style="list-style-type: none; padding: 0;">
+        <ul class="conversation-list"> {# Applied new class here #}
             {% for conversation in conversations %}
-                <li style="margin-bottom: 10px; border: 1px solid #eee; padding: 10px; border-radius: 5px;">
-                    <a href="{% url 'conversation_detail' conversation.id %}" style="text-decoration: none; color: inherit; display: block;">
-                        <strong style="color: #333;">
+                <li class="conversation-item"> {# Applied new class here #}
+                    <a href="{% url 'conversation_detail' conversation.id %}" class="conversation-link"> {# Applied new class here #}
+                        <strong>
                             Conversation with
                             {% if conversation.participant1 == request.user %}
                                 {{ conversation.participant2.username }}
@@ -24,9 +78,9 @@
                             {% endif %}
                         </strong>
                         {% if conversation.upcycling_request %}
-                            <br><small style="color: #666;">About Request #{{ conversation.upcycling_request.id }} - {{ conversation.upcycling_request.product_type }}</small>
+                            <small>About Request #{{ conversation.upcycling_request.id }} - {{ conversation.upcycling_request.product_type }}</small>
                         {% endif %}
-                        <br><small style="color: #999;">Last updated: {{ conversation.updated_at|date:"M d, Y H:i" }}</small>
+                        <small>Last updated: {{ conversation.updated_at|date:"M d, Y H:i" }}</small>
                     </a>
                 </li>
             {% endfor %}

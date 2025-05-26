@@ -2,36 +2,101 @@
 
 {% block title %}Available Upcycling Requests{% endblock %}
 
-{% block content %}
+{% block extra_head %}
 <style>
-    /* Basic styling for demonstration, replace with your actual CSS */
-    .artisan-requests-container { max-width: 900px; margin: 30px auto; padding: 25px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    h1 { color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
-    .request-card {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 15px;
-        margin-bottom: 15px;
-        background-color: #e6f7ff; /* Light blue for available requests */
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    /* Overall container for artisan requests */
+    .artisan-requests-container {
+        max-width: 900px;
+        margin: 25px auto; /* Slightly less margin for tighter integration */
+        padding: 30px; /* More padding */
+        background-color: #2c3e50; /* Darker blue for container background */
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Stronger shadow for depth */
     }
-    .request-card h3 { margin-top: 0; color: #0056b3; }
-    .request-card p { margin-bottom: 5px; }
+
+    h1 {
+        font-family: 'Montserrat', sans-serif; /* Consistent font with headings */
+        color: #f8f9fa; /* Light heading color */
+        border-bottom: 2px solid #495057; /* Darker, subtle separator */
+        padding-bottom: 15px; /* More space below heading */
+        margin-bottom: 25px; /* More space before cards */
+        text-align: center; /* Center the main title */
+        font-size: 2.5em; /* Larger title */
+    }
+
+    /* Individual request card styling */
+    .request-card {
+        border: none; /* Remove border, rely on shadow for separation */
+        border-radius: 10px; /* More rounded corners */
+        padding: 20px; /* More padding inside card */
+        margin-bottom: 20px; /* More space between cards */
+        background-color: #343a40; /* Darker grey for card background */
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3); /* Subtle shadow for depth */
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Smooth transition */
+    }
+
+    .request-card:hover {
+        transform: translateY(-5px); /* Lift effect on hover */
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4); /* Enhanced shadow on hover */
+    }
+
+    .request-card h3 {
+        font-family: 'Montserrat', sans-serif;
+        margin-top: 0;
+        color: #20c997; /* Teal accent color for request title */
+        font-size: 1.6em; /* Slightly larger heading */
+        margin-bottom: 10px;
+        border-bottom: 1px solid #495057; /* Subtle separator */
+        padding-bottom: 8px;
+    }
+
+    .request-card h3 small {
+        color: #adb5bd; /* Lighter grey for ID */
+        font-size: 0.7em;
+        font-weight: normal;
+    }
+
+    .request-card p {
+        color: #ced4da; /* Light gray for body text */
+        margin-bottom: 8px; /* Consistent spacing */
+        line-height: 1.6; /* Improved readability */
+    }
+
+    .request-card strong {
+        color: #e9ecef; /* Lighter white for labels */
+    }
+
+    /* Button/link to view details */
     .request-card a {
         display: inline-block;
-        margin-top: 10px;
-        background-color: #007bff;
-        color: white;
-        padding: 8px 15px;
+        margin-top: 15px; /* More space above button */
+        background-color: #20c997; /* Teal accent for button */
+        color: #212529; /* Dark text on teal */
+        padding: 10px 20px; /* More padding */
         border-radius: 5px;
         text-decoration: none;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
     }
-    .request-card a:hover {
-        background-color: #0056b3;
-    }
-    .no-requests { text-align: center; color: #666; padding: 20px; border: 1px dashed #ccc; border-radius: 8px; }
-</style>
 
+    .request-card a:hover {
+        background-color: #17a2b8; /* Darker teal on hover */
+    }
+
+    /* Styling for "No requests" message */
+    .no-requests {
+        text-align: center;
+        color: #adb5bd; /* Medium gray for no requests text */
+        padding: 30px; /* More padding */
+        border: 1px dashed #495057; /* Darker dashed border */
+        border-radius: 10px;
+        background-color: #343a40; /* Dark background for this block */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* Subtle shadow */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
 <div class="artisan-requests-container">
     <h1>Available Upcycling Requests for Artisans</h1>
 
@@ -43,7 +108,7 @@
                 <p><strong>Pickup Location:</strong> {{ request.pickup_location }}</p>
                 <p><strong>Budget:</strong> {% if request.budget %}${{ request.budget }}{% else %}Not specified{% endif %}</p>
                 <p><strong>Submitted On:</strong> {{ request.created_at|date:"F d, Y P" }}</p>
-                <a href="{% url 'request_detail' request_id=request.id %}">View Details & Make Offer</a> {# This link will be updated later #}
+                <a href="{% url 'request_detail' request_id=request.id %}">View Details & Make Offer</a>
             </div>
         {% endfor %}
     {% else %}

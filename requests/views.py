@@ -9,7 +9,13 @@ from django.db.models import Q
 
 # A simple home page view (optional, but good to have)
 def home_page(request):
-    return render(request, 'requests/home_page.html')
+    # Fetch up to 3 latest requests that are 'Request Received' (pending)
+    # Adjust 'status' as per your model's actual status values if needed
+    latest_requests = UpcyclingRequest.objects.filter(status='Request Received').order_by('-created_at')[:3]
+    context = {
+        'latest_requests': latest_requests,
+    }
+    return render(request, 'requests/home_page.html', context)
 
 def is_active_artisan(user):
     return user.is_authenticated and hasattr(user, 'artisan_profile') and user.artisan_profile.is_active_artisan
@@ -75,6 +81,9 @@ def request_detail(request, request_id):
             if request.user.artisan_profile.is_active_artisan:
                 print(f"DEBUG: Current artisan has already made offer: {has_made_offer}") # New debug line
 
+    print(f"DEBUG: upcycling_request.item_image value: {upcycling_request.item_image}") # Change from .image
+    if upcycling_request.item_image: # Change from .image
+        print(f"DEBUG: upcycling_request.item_image.url: {upcycling_request.item_image.url}") # Change from .image.url
 
     context = {
         'request': upcycling_request,
