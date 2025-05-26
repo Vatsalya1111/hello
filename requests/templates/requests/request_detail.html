@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Request Details{% endblock %}
+
+{% block extra_head %}
+<style>
+    .request-detail-container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+
+    .request-detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    .request-detail-title {
+        font-size: 2em;
+        color: #333;
+        margin: 0;
+    }
+
+    .request-image {
+        max-width: 100%; /* Make image responsive */
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    .request-info p {
+        margin: 8px 0;
+    }
+
+    .request-info strong {
+        font-weight: bold;
+        color: #555;
+    }
+
+    .offer-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .offer-item {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        background-color: white;
+    }
+
+    .offer-item strong {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .accept-link,
+    .reject-link {
+        display: inline-block;
+        padding: 8px 12px;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    .accept-link {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .reject-link {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    /* NEW CSS for the Make Offer form */
+    .offer-form-container {
+        margin-top: 30px;
+        padding: 20px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        background-color: #ffffff;
+    }
+
+    .offer-form-container h3 {
+        margin-top: 0;
+        color: #333;
+    }
+
+    .offer-form-container .form-field p {
+        margin-bottom: 15px;
+    }
+
+    .offer-form-container label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #555;
+    }
+
+    .offer-form-container input[type="number"],
+    .offer-form-container textarea {
+        width: calc(100% - 22px);
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1em;
+    }
+
+    .offer-form-container textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    .offer-form-container button[type="submit"] {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.1em;
+        margin-top: 15px;
+    }
+
+    .offer-form-container button[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="request-detail-container">
+    <div class="request-detail-header">
+        <h2 class="request-detail-title">{{ request.title }}</h2>
+    </div>
+
+    {% if request.image %}
+        <img src="{{ request.image.url }}" alt="{{ request.title }}" class="request-image">
+    {% endif %}
+
+    <div class="request-info">
+        <p><strong>Status:</strong> {{ request.status }}</p>
+        <p><strong>Description:</strong> {{ request.description }}</p>
+        <p><strong>Submitted on:</strong> {{ request.created_at|date:"F j, Y, g:i a" }}</p>
+        <p><strong>Pickup Location:</strong> {{ request.pickup_location }}</p>
+        <p><strong>Budget:</strong> {{ request.budget }}</p>
+        <p><strong>Material Details:</strong> {{ request.material_details }}</p>
+        <p><strong>Style Preference:</strong> {{ request.style_preference }}</p>
+    </div>
+
+    <h3>Offers:</h3>
+    {% if request.offers.all %}
+        <ul class="offer-list">
+            {% for offer in request.offers.all %}
+                <li class="offer-item">
+                    <p><strong>Artisan:</strong> {{ offer.artisan.user.username }} ({{ offer.status }})</p>
+                    <p><strong>Price:</strong> {{ offer.price }}</p>
+                    <p><strong>Message:</strong> {{ offer.message }}</p>
+                    {# These buttons only appear if the user is the request owner and the offer is pending #}
+                    {% if offer.status == 'Pending' and request.user == request.upcyclingrequest.user %}
+                        <a href="{% url 'accept_offer' offer.id %}" class="accept-link">Accept</a>
+                        <a href="{% url 'reject_offer' offer.id %}" class="reject-link">Reject</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No offers yet.</p>
+    {% endif %}
+
+    {# Make Offer Form - Displayed only if offer_form is passed and request is open #}
+    {% if offer_form and request.status == 'Open' %}
+    <div class="offer-form-container">
+        <h3>Make an Offer</h3>
+        <form method="post" action="{% url 'make_offer' request.id %}">
+            {% csrf_token %}
+            {# Render each field individually to apply custom styling #}
+            <div class="form-field">
+                {{ offer_form.price.label_tag }}
+                {{ offer_form.price }}
+                {% if offer_form.price.errors %}
+                    <ul class="errorlist">{% for error in offer_form.price.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                {% endif %}
+            </div>
+            <div class="form-field">
+                {{ offer_form.message.label_tag }}
+                {{ offer_form.message }}
+                {% if offer_form.message.errors %}
+                    <ul class="errorlist">{% for error in offer_form.message.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                {% endif %}
+            </div>
+            <button type="submit">Submit Offer</button>
+        </form>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

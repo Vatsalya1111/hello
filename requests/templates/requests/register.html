@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<style>
+    /* Basic styling for demonstration, replace with your actual CSS */
+    .register-container { max-width: 400px; margin: 30px auto; padding: 25px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    h1 { text-align: center; color: #333; margin-bottom: 20px; }
+    form p { margin-bottom: 15px; }
+    form label { display: block; margin-bottom: 5px; font-weight: bold; }
+    form input[type="text"],
+    form input[type="password"] {
+        width: calc(100% - 22px); /* Adjust padding */
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+    form button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+        margin-top: 20px;
+    }
+    form button:hover {
+        background-color: #0056b3;
+    }
+    .errorlist { color: red; list-style-type: none; padding: 0; margin: 0; }
+    .success-message { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 5px; padding: 10px; margin-bottom: 15px; }
+    .info-message { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; border-radius: 5px; padding: 10px; margin-bottom: 15px; }
+</style>
+
+<div class="register-container">
+    <h1>Register</h1>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }} {# Renders fields as paragraphs #}
+        <button type="submit">Register</button>
+    </form>
+
+    <p>Already have an account? <a href="{% url 'login' %}">Log In</a></p>
+</div>
+{% endblock %}

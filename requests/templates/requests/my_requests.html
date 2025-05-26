@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}My Upcycling Requests{% endblock %}
+
+{% block extra_head %}
+<style>
+    .request-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .request-item {
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 8px;
+        background-color: #fff;
+    }
+
+    .request-image {
+        max-width: 200px;
+        height: auto;
+        margin-bottom: 10px;
+    }
+
+    .detail-link {
+        display: inline-block;
+        padding: 8px 12px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    .detail-link:hover {
+        background-color: #0056b3;
+    }
+
+    .offer-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 10px;
+    }
+
+    .offer-item {
+        border-bottom: 1px solid #eee;
+        padding: 10px 0;
+    }
+
+    .accept-link, .reject-link {
+        display: inline-block;
+        padding: 5px 8px;
+        text-decoration: none;
+        border-radius: 3px;
+        margin-right: 5px;
+    }
+
+    .accept-link {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .reject-link {
+        background-color: #dc3545;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <h2>My Upcycling Requests</h2>
+    {% if requests %}
+        <div class="request-list">
+            {% for req in requests %}
+                <div class="request-item">
+                    <h3>{{ req.title }}</h3>
+                    <p><strong>Status:</strong> {{ req.status }}</p>
+                    <p>{{ req.description|truncatechars:150 }}</p>
+                    {% if req.image %}
+                        <img src="{{ req.image.url }}" alt="{{ req.title }}" class="request-image">
+                    {% endif %}
+                    <p><strong>Submitted on:</strong> {{ req.created_at|date:"F j, Y, g:i a" }}</p>
+                    <a href="{% url 'request_detail' req.id %}" class="detail-link">View Details</a>
+
+                    {% if req.offers.all %}
+                        <h4>Offers:</h4>
+                        <ul class="offer-list">
+                            {% for offer in req.offers.all %}
+                                <li class="offer-item">
+                                    <strong>Artisan:</strong> {{ offer.artisan.user.username }} ({{ offer.status }})
+                                    <p><strong>Price:</strong> {{ offer.price }}</p>
+                                    <p><strong>Message:</strong> {{ offer.message }}</p>
+                                    {% if offer.status == 'Pending' and request.user == req.user %}
+                                        <a href="{% url 'accept_offer' offer.id %}" class="accept-link">Accept</a> |
+                                        <a href="{% url 'reject_offer' offer.id %}">Reject</a>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No offers yet.</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You have not submitted any upcycling requests yet.</p>
+    {% endif %}
+{% endblock %}

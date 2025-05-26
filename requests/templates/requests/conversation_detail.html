@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Conversation with {{ other_participant.username }}</h2>
+    {% if conversation.upcycling_request %}
+        <p>About Request: <a href="{% url 'request_detail' conversation.upcycling_request.id %}">{{ conversation.upcycling_request.product_type }}</a></p>
+    {% endif %}
+
+    {# THIS BLOCK IS FOR DJANGO'S FLASH MESSAGES - KEEP AS IS #}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="message-container" style="border: 1px solid #ccc; padding: 15px; max-height: 400px; overflow-y: scroll; margin-bottom: 20px; background-color: #f9f9f9; border-radius: 8px;">
+        {% if messages_in_conversation %} {# <--- ENSURE YOU CHANGE THIS LINE! #}
+            {% for message in messages_in_conversation %} {# <-- This part is already correct #}
+                <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}" style="margin-bottom: 10px; padding: 10px; border-radius: 15px; max-width: 75%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); word-wrap: break-word;">
+                    {% if message.sender == request.user %}
+                        {# Sent message bubble (aligned right) #}
+                        <div style="background-color: #dcf8c6; margin-left: auto; margin-right: 0; display: table; clear: both;">
+                            <p style="margin: 0; padding: 0 5px;">{{ message.content }}</p>
+                            <small style="display: block; text-align: right; color: #666; font-size: 0.7em; padding-top: 3px; padding-right: 5px;">{{ message.timestamp|date:"M d, H:i" }}</small>
+                        </div>
+                    {% else %}
+                        {# Received message bubble (aligned left) #}
+                        <div style="background-color: #e0e0e0; margin-right: auto; margin-left: 0; display: table; clear: both;">
+                            <small style="font-weight: bold; color: #555; display: block; margin-bottom: 3px; padding: 0 5px;">{{ message.sender.username }}</small>
+                            <p style="margin: 0; padding: 0 5px;">{{ message.content }}</p>
+                            <small style="display: block; text-align: left; color: #666; font-size: 0.7em; padding-top: 3px; padding-left: 5px;">{{ message.timestamp|date:"M d, H:i" }}</small>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p style="text-align: center; color: #777;">No messages in this conversation yet. Start chatting!</p>
+        {% endif %}
+    </div>
+    {# Removed the extra clear: both; below message-container as display:table handles it #}
+
+    <form method="post" action="{% url 'conversation_detail' conversation.id %}" style="margin-top: 20px;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Send Message</button>
+    </form>
+
+    <p style="margin-top: 20px;"><a href="{% url 'conversation_list' %}" style="color: #007bff; text-decoration: none;">&larr; Back to Conversations</a></p>
+
+{% endblock content %}
