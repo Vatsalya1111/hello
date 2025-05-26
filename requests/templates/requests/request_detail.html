@@ -178,8 +178,8 @@
         <p>No offers yet.</p>
     {% endif %}
 
-    {# Make Offer Form - Displayed only if offer_form is passed and request is open #}
-    {% if offer_form and request.status == 'Open' %}
+    {# Make Offer Form - Displayed only if offer_form is passed, request is "Request Received", AND current artisan hasn't made an offer #}
+    {% if offer_form and request.status == 'Request Received' and not has_made_offer %}
     <div class="offer-form-container">
         <h3>Make an Offer</h3>
         <form method="post" action="{% url 'make_offer' request.id %}">
@@ -199,9 +199,21 @@
                     <ul class="errorlist">{% for error in offer_form.message.errors %}<li>{{ error }}</li>{% endfor %}</ul>
                 {% endif %}
             </div>
+            <div class="form-field">
+                {{ offer_form.estimated_completion_days.label_tag }}
+                {{ offer_form.estimated_completion_days }}
+                {% if offer_form.estimated_completion_days.errors %}
+                    <ul class="errorlist">{% for error in offer_form.estimated_completion_days.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                {% endif %}
+            </div>
+            {% if offer_form.non_field_errors %} {# Added this in previous iteration, ensure it's there #}
+                <ul class="errorlist">{% for error in offer_form.non_field_errors %}<li>{{ error }}</li>{% endfor %}</ul>
+            {% endif %}
             <button type="submit">Submit Offer</button>
         </form>
     </div>
+    {% elif has_made_offer and request.user.is_authenticated and request.user.artisan_profile.is_active_artisan %}
+        <p>You have already made an offer for this request.</p>
     {% endif %}
 
 </div>

@@ -40,31 +40,46 @@ def request_success(request):
     return render(request, 'requests/request_success.html')
 
 
+@login_required
 def request_detail(request, request_id):
     upcycling_request = get_object_or_404(UpcyclingRequest, id=request_id)
 
     offer_form = None
-    
-    # --- ADD THESE DEBUG PRINT STATEMENTS ---
+    has_made_offer = False # Flag to track if the current artisan has an offer
+
+    if request.user.is_authenticated:
+        # Check if the logged-in user is an active artisan AND not the owner of the request
+        if hasattr(request.user, 'artisan_profile') and \
+           request.user.artisan_profile.is_active_artisan and \
+           request.user != upcycling_request.user:
+
+            # Check if this artisan has already made an offer for this request
+            if Offer.objects.filter(request=upcycling_request, artisan=request.user.artisan_profile).exists():
+                has_made_offer = True
+            else:
+                # Only initialize the form if no offer has been made by this artisan
+                offer_form = OfferForm()
+                print("DEBUG: offer_form initialized successfully!")
+        else:
+            # If the user is the owner or not an active artisan, ensure offer_form is None
+            offer_form = None
+            print("DEBUG: Offer form not initialized (user is owner or not active artisan).")
+
     print(f"DEBUG: Viewing request {upcycling_request.id}, Status: {upcycling_request.status}")
     print(f"DEBUG: User authenticated: {request.user.is_authenticated}")
     if request.user.is_authenticated:
         print(f"DEBUG: User is owner of request: {request.user == upcycling_request.user}")
-        print(f"DEBUG: User has artisan_profile attribute: {hasattr(request.user, 'artisan_profile')}")
         if hasattr(request.user, 'artisan_profile'):
+            print(f"DEBUG: User has artisan_profile attribute: True")
             print(f"DEBUG: Artisan profile active: {request.user.artisan_profile.is_active_artisan}")
-    # --- END DEBUG PRINT STATEMENTS ---
+            if request.user.artisan_profile.is_active_artisan:
+                print(f"DEBUG: Current artisan has already made offer: {has_made_offer}") # New debug line
 
-    # If user is authenticated, is an active artisan, and is NOT the owner of the request
-    if request.user.is_authenticated and hasattr(request.user, 'artisan_profile') and \
-       request.user.artisan_profile.is_active_artisan and \
-       request.user != upcycling_request.user:
-        offer_form = OfferForm() # Initialize empty form for GET requests
-        print("DEBUG: offer_form initialized successfully!") # Added this too
 
     context = {
         'request': upcycling_request,
-        'offer_form': offer_form, # Pass the offer form to the template
+        'offer_form': offer_form, # This will be None if offer already made or not artisan
+        'has_made_offer': has_made_offer, # Pass the flag to the template
     }
     return render(request, 'requests/request_detail.html', context)
 

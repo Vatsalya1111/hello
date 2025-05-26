@@ -8,7 +8,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')), # For Django's built-in login/logout
-    path('requests/', include('requests.urls')), # <--- THIS LINE IS CRUCIAL
+    #path('requests/', include('requests.urls')), # <--- THIS LINE IS CRUCIAL
     path('', include('requests.urls')), # Assuming your home page is in requests.urls
 ]
 

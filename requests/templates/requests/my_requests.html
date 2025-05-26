@@ -64,6 +64,7 @@
     .reject-link {
         background-color: #dc3545;
         color: white;
+        display: inline-block;
     }
 </style>
 {% endblock %}
@@ -93,7 +94,7 @@
                                     <p><strong>Message:</strong> {{ offer.message }}</p>
                                     {% if offer.status == 'Pending' and request.user == req.user %}
                                         <a href="{% url 'accept_offer' offer.id %}" class="accept-link">Accept</a> |
-                                        <a href="{% url 'reject_offer' offer.id %}">Reject</a>
+                                        <a href="{% url 'reject_offer' offer.id %}" class="reject-link">Reject</a>
                                     {% endif %}
                                 </li>
                             {% endfor %}
