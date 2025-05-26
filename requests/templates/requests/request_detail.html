@@ -12,6 +12,7 @@
         border: 1px solid #ddd;
         border-radius: 8px;
         background-color: #f9f9f9;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     .request-detail-header {
@@ -37,12 +38,14 @@
     }
 
     .request-info p {
-        margin: 8px 0;
+        margin: 12px 0; /* Increase vertical spacing */
+        line-height: 1.5; /* Improve readability */
+        color: #444; /* Slightly darker text */
     }
 
     .request-info strong {
         font-weight: bold;
-        color: #555;
+        color: #222; /* Make labels stand out more */
     }
 
     .offer-list {
@@ -144,8 +147,8 @@
         <h2 class="request-detail-title">{{ request.title }}</h2>
     </div>
 
-    {% if request.image %}
-        <img src="{{ request.image.url }}" alt="{{ request.title }}" class="request-image">
+    {% if request.item_image %} {# Change from request.image #}
+        <img src="{{ request.item_image.url }}" alt="{{ request.title }}" class="request-image"> {# Change from request.image.url #}
     {% endif %}
 
     <div class="request-info">

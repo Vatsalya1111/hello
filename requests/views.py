@@ -75,6 +75,9 @@ def request_detail(request, request_id):
             if request.user.artisan_profile.is_active_artisan:
                 print(f"DEBUG: Current artisan has already made offer: {has_made_offer}") # New debug line
 
+    print(f"DEBUG: upcycling_request.item_image value: {upcycling_request.item_image}") # Change from .image
+    if upcycling_request.item_image: # Change from .image
+        print(f"DEBUG: upcycling_request.item_image.url: {upcycling_request.item_image.url}") # Change from .image.url
 
     context = {
         'request': upcycling_request,
